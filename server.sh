@@ -186,6 +186,24 @@ start_gateway() {
   fi
 }
 
+run_gateway() {
+  export OPENCLAW_CONFIG_PATH="$CONFIG_FILE"
+  export OPENCLAW_STATE_DIR="$STATE_DIR"
+  export OPENCLAW_GATEWAY_PORT="$PORT"
+
+  echo "系统: $OS  |  Node: $($NODE --version 2>/dev/null)"
+  echo "以前台交互模式启动 Gateway 服务..."
+  echo "配置文件: $OPENCLAW_CONFIG_PATH"
+  echo "状态目录: $OPENCLAW_STATE_DIR"
+  echo "端口: $PORT"
+  echo ""
+  echo "Web UI: http://127.0.0.1:$PORT/#token=${GATEWAY_TOKEN}"
+  echo "提示: 按 Ctrl+C 停止服务"
+  echo "----------------------------------------"
+
+  "$NODE" "$SCRIPT_DIR/dist/index.mjs" gateway --port "$PORT"
+}
+
 update_cookie() {
   echo "更新 Claude Web Cookie..."
 
@@ -249,6 +267,10 @@ case "${1:-start}" in
     stop_gateway
     start_gateway
     ;;
+  run)
+    stop_gateway
+    run_gateway
+    ;;
   status)
     if [ -f "$PID_FILE" ]; then
       PID=$(cat "$PID_FILE")
@@ -271,13 +293,14 @@ case "${1:-start}" in
     update_cookie "$@"
     ;;
   *)
-    echo "用法: $0 {start|stop|restart|status|update-cookie}"
+    echo "用法: $0 {start|stop|restart|status|run|update-cookie}"
     echo ""
     echo "命令说明："
-    echo "  start         - 启动 Gateway 服务"
+    echo "  start         - 启动 Gateway 服务 (后台跑)"
     echo "  stop          - 停止 Gateway 服务"
     echo "  restart       - 重启 Gateway 服务"
     echo "  status        - 查看服务状态"
+    echo "  run           - 前台交互式启动 (实时显示日志)"
     echo "  update-cookie - 更新 Claude Web cookie"
     echo ""
     echo "示例："

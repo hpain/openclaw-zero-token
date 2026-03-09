@@ -89,9 +89,9 @@ function Start-Gateway {
     Write-Host ""
 
     $indexMjs = Join-Path $scriptDir "dist\index.mjs"
-    $args = @($indexMjs, "gateway", "--port", "$port")
+    $cmdArgs = @($indexMjs, "gateway", "--port", "$port")
     
-    $proc = Start-Process -FilePath $nodeExe -ArgumentList $args -RedirectStandardOutput $tmpLog -RedirectStandardError $tmpLog -WindowStyle Hidden -PassThru
+    $proc = Start-Process -FilePath $nodeExe -ArgumentList $cmdArgs -RedirectStandardOutput $tmpLog -RedirectStandardError $tmpLog -WindowStyle Hidden -PassThru
     $procId = $proc.Id
     Set-Content -Path $pidFile -Value $procId
 
@@ -141,6 +141,28 @@ function Start-Gateway {
     }
 }
 
+function Invoke-Gateway {
+    $env:OPENCLAW_CONFIG_PATH = $configFile
+    $env:OPENCLAW_STATE_DIR = $stateDir
+    $env:OPENCLAW_GATEWAY_PORT = $port
+
+    $nodeVersion = & $nodeExe --version 2>$null
+    Write-Host "系统: Windows | Node: $nodeVersion"
+    Write-Host "以前台交互模式启动 Gateway 服务..."
+    Write-Host "配置文件: $env:OPENCLAW_CONFIG_PATH"
+    Write-Host "状态目录: $env:OPENCLAW_STATE_DIR"
+    Write-Host "端口: $port"
+    Write-Host ""
+    Write-Host "Web UI: http://127.0.0.1:$port/#token=$gatewayToken"
+    Write-Host "提示: 按 Ctrl+C 停止服务"
+    Write-Host "----------------------------------------"
+
+    $indexMjs = Join-Path $scriptDir "dist\index.mjs"
+    $cmdArgs = @($indexMjs, "gateway", "--port", "$port")
+    
+    & $nodeExe $cmdArgs
+}
+
 $command = "start"
 if ($args.Count -gt 0) { $command = $args[0] }
 
@@ -156,6 +178,10 @@ switch ($command) {
     "restart" {
         Stop-Gateway
         Start-Gateway
+    }
+    "run" {
+        Stop-Gateway
+        Invoke-Gateway
     }
     "status" {
         if (Test-Path $pidFile) {
@@ -178,7 +204,14 @@ switch ($command) {
         }
     }
     default {
-        Write-Host "用法: .\server.ps1 {start|stop|restart|status}"
+        Write-Host "用法: .\server.ps1 {start|stop|restart|status|run}"
+        Write-Host ""
+        Write-Host "命令说明:"
+        Write-Host "  start   - 后台运行"
+        Write-Host "  stop    - 停止后台服务"
+        Write-Host "  restart - 重启后台服务"
+        Write-Host "  status  - 查看状态"
+        Write-Host "  run     - 前台交互式运行 (实时显示日志)"
         exit 1
     }
 }
