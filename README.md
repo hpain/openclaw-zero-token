@@ -106,7 +106,7 @@ pnpm install && pnpm build && pnpm ui:build
 
 > **Platform support:**
 > - **macOS / Linux:** Follow [START_HERE.md](START_HERE.md) for the step-by-step flow; see [INSTALLATION.md](INSTALLATION.md) for detailed setup. Run `./check-setup.sh` (on macOS you can also use `./check-mac-setup.sh`).
-> - **Windows:** Use WSL2, then follow the Linux flow ([START_HERE.md](START_HERE.md), [INSTALLATION.md](INSTALLATION.md)). Install WSL2: `wsl --install`; guide: https://docs.microsoft.com/en-us/windows/wsl/install.
+> - **Windows (Recommended / Native):** Native Windows environments are now fully supported. Open **PowerShell** (not CMD) and directly run the `.\start-chrome-debug.ps1` scripts; if using CMD, run `powershell -File .\start-chrome-debug.ps1`. No WSL2 required. (If you still want to use WSL2: Install WSL2 with `wsl --install` and follow the Linux flow).
 
 See **START_HERE.md**, **INSTALLATION.md**, and **TEST_STEPS.md** for details.
 
@@ -123,14 +123,14 @@ See **START_HERE.md**, **INSTALLATION.md**, and **TEST_STEPS.md** for details.
 > **Platform support:**
 >
 > - 🍎 **macOS** / 🐧 **Linux**: Follow [START_HERE.md](START_HERE.md) for step-by-step flow; see [INSTALLATION.md](INSTALLATION.md) for detailed setup.
-> - 🪟 **Windows**: Use WSL2, then follow the Linux flow ([START_HERE.md](START_HERE.md), [INSTALLATION.md](INSTALLATION.md)). Install WSL2: `wsl --install`; guide: https://docs.microsoft.com/en-us/windows/wsl/install
+> - 🪟 **Windows**: Native Windows environments are now fully supported (PowerShell). If you still wish to use WSL2, follow the Linux flow. Install WSL2: `wsl --install`; guide: https://docs.microsoft.com/en-us/windows/wsl/install
 
 ### Environment Requirements
 
 - Node.js >= 22.12.0
 - pnpm >= 9.0.0
 - Chrome browser
-- **OS**: macOS, Linux, or Windows (WSL2)
+- **OS**: macOS, Linux, or Windows 10/11
 
 ### Script Overview
 
@@ -162,11 +162,11 @@ The project provides several helper scripts for different scenarios:
 
 **Core scripts (3):**
 
-| Script | Purpose | When to use |
-|--------|---------|-------------|
-| `start-chrome-debug.sh` | Launch Chrome in debug mode | Step 2: Opens browser on port 9222 for platform login and onboard connection |
-| `onboard.sh` | Auth configuration wizard | Steps 4–5: Select platform (deepseek-web, etc.), capture Cookie/Token |
-| `server.sh` | Manage Gateway service | Step 6 and daily: `start` / `stop` / `restart` / `status`, port 3001 |
+| macOS/Linux Script | Windows Script (PowerShell) | Purpose | When to use |
+|--------|---------|---------|-------------|
+| `start-chrome-debug.sh` | `start-chrome-debug.ps1` | Launch Chrome in debug mode | Step 2: Opens browser on port 9222 for platform login and onboard connection |
+| `onboard.sh` | `onboard.ps1` | Auth configuration wizard | Steps 4–5: Select platform (deepseek-web, etc.), capture Cookie/Token |
+| `server.sh` | `server.ps1` | Manage Gateway service | Step 6 and daily: `start` / `stop` / `restart` / `status`, port 3001 |
 
 ### Installation
 
@@ -192,14 +192,17 @@ pnpm ui:build   # Build Web UI (required for http://127.0.0.1:3001)
 
 ```bash
 # First: launch Chrome debug mode and login to platforms in the browser
-./start-chrome-debug.sh
+# (Mac/Linux): ./start-chrome-debug.sh
+# (Windows PowerShell): .\start-chrome-debug.ps1
+# (Windows CMD)       : powershell -ExecutionPolicy Bypass -File .\start-chrome-debug.ps1
+
 # Then visit and login: Qwen, Kimi, Claude, Doubao, ChatGPT, Gemini, Grok, GLM, etc.
 
 # Run config wizard (onboard or server will copy from .openclaw-state.example if config is missing)
-./onboard.sh
-
-# Or use built version
-node openclaw.mjs onboard
+# (Mac/Linux): ./onboard.sh
+# (Windows PowerShell): .\onboard.ps1
+# (Windows CMD)       : powershell -ExecutionPolicy Bypass -File .\onboard.ps1
+```
 
 # Select auth provider
 ? Auth provider: DeepSeek (Browser Login)
@@ -214,8 +217,10 @@ node openclaw.mjs onboard
 #### Step 3: Start Gateway
 
 ```bash
-# Use helper script (recommended)
-./server.sh start
+# Use helper script to manage gateway
+# (Mac/Linux): ./server.sh start
+# (Windows PowerShell): .\server.ps1 start
+# (Windows CMD)       : powershell -ExecutionPolicy Bypass -File .\server.ps1 start
 ```
 
 ---
