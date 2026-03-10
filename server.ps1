@@ -78,6 +78,7 @@ function Start-Gateway {
     $env:OPENCLAW_CONFIG_PATH = $configFile
     $env:OPENCLAW_STATE_DIR = $stateDir
     $env:OPENCLAW_GATEWAY_PORT = $port
+    $env:OPENCLAW_PLUGIN_SDK_PATH = Join-Path $scriptDir "dist\index.mjs"
 
     $nodeVersion = & $nodeExe --version 2>$null
     Write-Host "系统: Windows | Node: $nodeVersion"
@@ -145,6 +146,7 @@ function Invoke-Gateway {
     $env:OPENCLAW_CONFIG_PATH = $configFile
     $env:OPENCLAW_STATE_DIR = $stateDir
     $env:OPENCLAW_GATEWAY_PORT = $port
+    $env:OPENCLAW_PLUGIN_SDK_PATH = Join-Path $scriptDir "dist\index.mjs"
 
     $nodeVersion = & $nodeExe --version 2>$null
     Write-Host "系统: Windows | Node: $nodeVersion"
@@ -215,3 +217,4 @@ switch ($command) {
         exit 1
     }
 }
+

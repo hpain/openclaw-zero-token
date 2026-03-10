@@ -33,6 +33,11 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./plugin-sdk": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/plugin-sdk.cjs",
+      "default": "./dist/plugin-sdk.mjs"
     }
   },
   "scripts": {
@@ -154,8 +159,8 @@
     "lit": "^3.3.2",
     "ollama": "^0.6.3",
     "oxfmt": "0.33.0",
-    "oxlint": "^1.48.0",
-    "oxlint-tsgolint": "^0.14.1",
+    "oxlint": "^1.51.0",
+    "oxlint-tsgolint": "^0.16.0",
     "rolldown": "1.0.0-rc.5",
     "tsdown": "^0.20.3",
     "tsx": "^4.21.0",
